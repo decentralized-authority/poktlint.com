@@ -58,9 +58,9 @@ function App() {
         }
       }
       setNodes(nodes);
+      setChainData([]);
       let newChainData: ChainResponse[] = [];
-      for(let i = 0; i < nodes.length; i++) {
-        const node = nodes[0];
+      await Promise.all(nodes.map(async function(node) {
         for(let j = 0; j < AWS_REGIONS.length; j++) {
           try {
             const region = AWS_REGIONS[j];
@@ -76,7 +76,7 @@ function App() {
             console.error(err);
           }
         }
-      }
+      }));
       setDisableRunButton(false);
     } catch(err) {
       console.error(err);
