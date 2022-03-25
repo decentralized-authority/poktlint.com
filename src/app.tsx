@@ -120,6 +120,7 @@ function App() {
                 <button className={'btn btn-primary btn-lg w-100'} type={'submit'} disabled={disableRunButton}>Run Tests</button>
               </div>
             </form>
+            <h5 className={'mb-3'}>Instructions can be found <a href={'https://docs.decentralizedauthority.com/pokt-lint'} target={'_blank'}>here</a>.</h5>
           </div>
         </div>
       </div>
