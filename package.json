@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@pokt-network/pocket-js": "^0.7.1-rc",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -10,9 +11,15 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.42",
     "@types/react-dom": "^17.0.14",
+    "bootstrap": "^4.0.0",
+    "jquery": "^3.0.0",
+    "lodash": "^4.17.21",
+    "popper.js": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
+    "sass": "^1.49.9",
+    "superagent": "^7.1.1",
+    "sweetalert": "^2.1.2",
     "typescript": "^4.6.2",
     "web-vitals": "^2.1.4"
   },
@@ -39,5 +46,19 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rBurgett/relay-tester.git"
+  },
+  "author": "Ryan Burgett <ryan@burgettdev.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rBurgett/relay-tester/issues"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.180",
+    "@types/superagent": "^4.1.15",
+    "react-scripts": "^4.0.0"
   }
 }
