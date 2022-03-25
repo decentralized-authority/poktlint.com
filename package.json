@@ -26,6 +26,7 @@
   "scripts": {
     "start": "react-scripts --max_old_space_size=8192 start",
     "build": "react-scripts --max_old_space_size=8192 build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -59,6 +60,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.180",
     "@types/superagent": "^4.1.15",
-    "react-scripts": "^4.0.0"
+    "react-scripts": "^4.0.0",
+    "source-map-explorer": "^2.5.2"
   }
 }
