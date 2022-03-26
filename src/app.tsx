@@ -159,7 +159,7 @@ function App() {
                             {AWS_REGIONS
                               .map(r => {
                                 return (
-                                  <th key={`${r}-header`} title={regionToName(r)}>{regionToShortened(r)}</th>
+                                  <th className={'text-nowrap'} key={`${r}-header`} title={regionToName(r)}>{regionToShortened(r)}</th>
                                 );
                               })
                             }
