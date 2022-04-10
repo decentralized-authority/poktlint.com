@@ -37,3 +37,11 @@ jobs:
           image: poktlint.com
           options: -v ${{ github.workspace }}/build:/app/build -w /app/build
           run: yarn run build
+
+      - name: Deploy dev.poktlint.com
+        id: docker_run_deploy_dev.poktlint.com
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amazon/aws-cli
+          options: -v ${{ github.workspace }}:/workspace -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          run: aws s3 sync /workspace/build s3://dev.poktlint.com --acl public-read --delete
