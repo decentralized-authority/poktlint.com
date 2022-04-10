@@ -5,7 +5,7 @@ import { GetNodeRes } from './modules/rpc-controller';
 import { Node } from '@pokt-network/pocket-js';
 import uniq from 'lodash/uniq';
 import { regionToName, regionToShortened, relayIdToName } from './util';
-import { AWS_REGIONS, SAMPLE_NUM } from './constants';
+import { AWS_REGIONS, INSTRUCTIONS_URL, SAMPLE_NUM } from './constants';
 import { ChainResponse } from './types/chain-response';
 // import daLogo from './images/da_logo_white-400.png';
 
@@ -114,13 +114,13 @@ function App() {
             <h1 className={'mt-3'}>POKT Lint</h1>
             <form className={'mt-2'} style={styles.form} onSubmit={onSubmit}>
               <div className={'form-group'}>
-                <input type={'text'} className={'form-control form-control-lg text-monospace'} value={addresses} placeholder={'Enter comma-separated list of POKT validator addresses'} onChange={onAddressesChange} required autoFocus />
+                <input type={'text'} spellCheck={false} className={'form-control form-control-lg text-monospace'} value={addresses} placeholder={'Enter comma-separated list of POKT validator addresses'} onChange={onAddressesChange} required autoFocus />
               </div>
               <div className={'form-group'}>
                 <button className={'btn btn-primary btn-lg w-100'} type={'submit'} disabled={disableRunButton}>Run Tests</button>
               </div>
             </form>
-            <h5 className={'mb-3'}>Instructions can be found <a href={'https://docs.decentralizedauthority.com/pokt-lint'} target={'_blank'}>here</a>.</h5>
+            <h5 className={'mb-3'}>Instructions can be found <a href={INSTRUCTIONS_URL} target={'_blank'} rel={'noreferrer'}>here</a>.</h5>
           </div>
         </div>
       </div>
