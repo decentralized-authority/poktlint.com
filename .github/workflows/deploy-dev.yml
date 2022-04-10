@@ -39,7 +39,7 @@ jobs:
           run: yarn run build
 
       - name: Deploy dev.poktlint.com
-        id: docker_run_deploy_dev.poktlint.com
+        id: docker_run_deploy_dev_poktlint_com
         uses: addnab/docker-run-action@v3
         with:
           image: amazon/aws-cli
