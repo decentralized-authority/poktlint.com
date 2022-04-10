@@ -1,11 +1,11 @@
-name: deploy lambda
+name: build deploy dev site
 
 on:
   push:
     branches: [dev]
 
 jobs:
-  build-deploy-lambda-functions:
+  build-deploy-dev-site:
 
     runs-on: ubuntu-latest
 
