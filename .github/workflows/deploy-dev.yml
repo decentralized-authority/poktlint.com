@@ -9,6 +9,8 @@ env:
   REACT_APP_AWS_REGIONS: us-east-1,us-west-1,eu-west-1,ap-southeast-1
   REACT_APP_AWS_RELAYTEST_ENDPOINT: https://cyjsleof37.execute-api.us-east-1.amazonaws.com/beta/relaytest
   REACT_APP_AWS_GATEWAY_API_KEY: cNQMO1MhIZ2MUqZghGtrF1vUrPuYRVOU3Bko0Yh9
+  S3_BUCKET: dev.poktlint.com
+  CLOUDFRONT_DISTRIBUTION: E11AAXVKHA90TY
 
 jobs:
   build-deploy-dev-site:
@@ -49,5 +51,13 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: amazon/aws-cli
-          options: -v ${{ github.workspace }}:/workspace -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          run: aws s3 sync /workspace/build s3://dev.poktlint.com --acl public-read --delete
+          options: -v ${{ github.workspace }}:/workspace -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e S3_BUCKET=${{ env.S3_BUCKET }}
+          run: aws s3 sync /workspace/build s3://$S3_BUCKET  --acl public-read --delete
+
+      - name: Create CDN cache invalidation
+        id: docker_run_create_cdn_cache_invalidation
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amazon/aws-cli
+          options: -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e CLOUDFRONT_DISTRIBUTION=${{ env.CLOUDFRONT_DISTRIBUTION }}
+          run: aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/" "/index.html"
