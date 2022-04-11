@@ -57,14 +57,32 @@ export class RPCController {
     if(statusCode !== 200)
       return [];
     const chainResponses: ChainResponse[] = [];
-    const rawDataArr: (ChainResponseData|string)[] = Object.values(body);
-    for(let i = 0; i < rawDataArr.length; i++) {
-      const item = rawDataArr[i];
-      if(typeof item === 'string')
-        throw new Error(item);
-      item.poktAddress = nodeAddress;
-      item.region = region;
-      chainResponses.push(new ChainResponse(item));
+    if(body.errorMessage) {
+      for(let i = 0; i < chains.length; i++) {
+        const chain = chains[i];
+        chainResponses.push(new ChainResponse({
+          poktAddress: nodeAddress,
+          region: region,
+          chain_id: chain,
+          chain_name: '',
+          success: false,
+          status_code: statusCode,
+          message: body.errorMessage,
+          duration_avg_ms: 0,
+          duration_min_ms: 0,
+          duration_max_ms: 0,
+        }));
+      }
+    } else {
+      const rawDataArr: (ChainResponseData|string)[] = Object.values(body);
+      for(let i = 0; i < rawDataArr.length; i++) {
+        const item = rawDataArr[i];
+        if(typeof item === 'string')
+          throw new Error(item);
+        item.poktAddress = nodeAddress;
+        item.region = region;
+        chainResponses.push(new ChainResponse(item));
+      }
     }
     return chainResponses;
   }

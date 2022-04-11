@@ -7,8 +7,8 @@ on:
 env:
   REACT_APP_POCKET_ENDPOINT: https://mainnet.gateway.pokt.network/v1/lb/622f3828b2feb20039807a2e
   REACT_APP_AWS_REGIONS: us-east-1,us-west-1,eu-west-1,ap-southeast-1
-  REACT_APP_AWS_RELAYTEST_ENDPOINT: https://cyjsleof37.execute-api.us-east-1.amazonaws.com/beta/relaytest
-  REACT_APP_AWS_GATEWAY_API_KEY: cNQMO1MhIZ2MUqZghGtrF1vUrPuYRVOU3Bko0Yh9
+  REACT_APP_AWS_RELAYTEST_ENDPOINT: https://ageqp421il.execute-api.us-east-1.amazonaws.com/dev/relaytest
+  REACT_APP_AWS_GATEWAY_API_KEY: 9KWW1Xi7zH26JtzEqvIno3RlPRFGsqoN621Vkdc0
   S3_BUCKET: dev.poktlint.com
   CLOUDFRONT_DISTRIBUTION: E11AAXVKHA90TY
 
