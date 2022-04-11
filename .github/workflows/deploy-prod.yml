@@ -1,0 +1,63 @@
+name: build deploy production site
+
+on:
+  push:
+    branches: [master]
+
+env:
+  REACT_APP_POCKET_ENDPOINT: https://mainnet.gateway.pokt.network/v1/lb/622f3828b2feb20039807a2e
+  REACT_APP_AWS_REGIONS: ap-northeast-1,ap-southeast-1,eu-central-1,eu-north-1,eu-west-1,us-east-1,us-east-2,us-west-1
+  REACT_APP_AWS_RELAYTEST_ENDPOINT: https://cyjsleof37.execute-api.us-east-1.amazonaws.com/beta/relaytest
+  REACT_APP_AWS_GATEWAY_API_KEY: cNQMO1MhIZ2MUqZghGtrF1vUrPuYRVOU3Bko0Yh9
+  S3_BUCKET: poktlint.com
+  CLOUDFRONT_DISTRIBUTION: E1I98D3RGAE05C
+
+jobs:
+  build-deploy-site:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver: docker
+
+      - name: Build Image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          tags: poktlint.com
+          push: false
+
+      - name: Run image
+        id: docker_run
+        uses: addnab/docker-run-action@v3
+        with:
+          image: poktlint.com
+          options: -v ${{ github.workspace }}/build:/app/build -w /app/build -e REACT_APP_POCKET_ENDPOINT=${{ env.REACT_APP_POCKET_ENDPOINT }} -e REACT_APP_AWS_REGIONS=${{ env.REACT_APP_AWS_REGIONS }} -e REACT_APP_AWS_RELAYTEST_ENDPOINT=${{ env.REACT_APP_AWS_RELAYTEST_ENDPOINT }} -e REACT_APP_AWS_GATEWAY_API_KEY=${{ env.REACT_APP_AWS_GATEWAY_API_KEY }}
+          run: yarn run build
+
+      - name: Deploy poktlint.com
+        id: docker_run_deploy_poktlint_com
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amazon/aws-cli
+          options: -v ${{ github.workspace }}:/workspace -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e S3_BUCKET=${{ env.S3_BUCKET }}
+          run: aws s3 sync /workspace/build s3://$S3_BUCKET  --acl public-read --delete
+
+      - name: Create CDN cache invalidation
+        id: docker_run_create_cdn_cache_invalidation
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amazon/aws-cli
+          options: -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e CLOUDFRONT_DISTRIBUTION=${{ env.CLOUDFRONT_DISTRIBUTION }} -e AWS_EC2_METADATA_DISABLED=true
+          run: aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/" "/index.html"
