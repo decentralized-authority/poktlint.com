@@ -5,7 +5,7 @@ import { GetNodeRes } from './modules/rpc-controller';
 import { Node } from '@pokt-network/pocket-js';
 import uniq from 'lodash/uniq';
 import { regionToName, regionToShortened, relayIdToName } from './util';
-import { AWS_REGIONS, INSTRUCTIONS_URL, SAMPLE_NUM } from './constants';
+import { AWS_REGIONS, DECIMAL_PLACES, INSTRUCTIONS_URL, SAMPLE_NUM } from './constants';
 import { ChainResponse } from './types/chain-response';
 // import daLogo from './images/da_logo_white-400.png';
 
@@ -183,8 +183,8 @@ function App() {
                                         return <td key={key} />;
                                       } else if(data.success) {
                                         return (
-                                          <td key={key} title={`total samples: ${SAMPLE_NUM}\navg time: ${data.durationAvg}\nmin time: ${data.durationMin}\nmax time: ${data.durationMax}`}>
-                                            <span className={'text-success text-monospace'}>{data.durationAvg.toFixed(3)}</span>
+                                          <td key={key} title={`total samples: ${SAMPLE_NUM}\nmedian time: ${data.durationMedian.toFixed(DECIMAL_PLACES)}\navg time: ${data.durationAvg.toFixed(DECIMAL_PLACES)}\nmin time: ${data.durationMin.toFixed(DECIMAL_PLACES)}\nmax time: ${data.durationMax.toFixed(DECIMAL_PLACES)}`}>
+                                            <span className={'text-success text-monospace'}>{data.durationMedian.toFixed(DECIMAL_PLACES)}</span>
                                           </td>
                                         );
                                       } else {

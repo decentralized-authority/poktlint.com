@@ -7,6 +7,7 @@ export interface ChainResponseData {
   status_code: number
   message: string
   duration_avg_ms: number
+  duration_median_ms: number
   duration_min_ms: number
   duration_max_ms: number
 }
@@ -21,6 +22,7 @@ export class ChainResponse {
   statusCode: number
   message: string
   durationAvg: number
+  durationMedian: number
   durationMin: number
   durationMax: number
 
@@ -33,6 +35,7 @@ export class ChainResponse {
     this.statusCode = data.status_code;
     this.message = data.message;
     this.durationAvg = data.duration_avg_ms;
+    this.durationMedian = data.duration_median_ms;
     this.durationMin = data.duration_min_ms;
     this.durationMax = data.duration_max_ms;
   }

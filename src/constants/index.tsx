@@ -25,4 +25,6 @@ if(!AWS_RELAYTEST_ENDPOINT)
 
 export const SAMPLE_NUM = 5;
 
+export const DECIMAL_PLACES = 3;
+
 export const INSTRUCTIONS_URL = 'https://docs.decentralizedauthority.com/pokt-lint';

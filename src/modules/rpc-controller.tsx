@@ -69,6 +69,7 @@ export class RPCController {
           status_code: statusCode,
           message: body.errorMessage,
           duration_avg_ms: 0,
+          duration_median_ms: 0,
           duration_min_ms: 0,
           duration_max_ms: 0,
         }));
