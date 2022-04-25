@@ -182,9 +182,10 @@ function App() {
                                       if(!data) {
                                         return <td key={key} />;
                                       } else if(data.success) {
+                                        const { durationMedian = 0 } = data;
                                         return (
-                                          <td key={key} title={`total samples: ${SAMPLE_NUM}\nmedian time: ${data.durationMedian.toFixed(DECIMAL_PLACES)}\navg time: ${data.durationAvg.toFixed(DECIMAL_PLACES)}\nmin time: ${data.durationMin.toFixed(DECIMAL_PLACES)}\nmax time: ${data.durationMax.toFixed(DECIMAL_PLACES)}`}>
-                                            <span className={'text-success text-monospace'}>{data.durationMedian.toFixed(DECIMAL_PLACES)}</span>
+                                          <td key={key} title={`total samples: ${SAMPLE_NUM}\nmedian time: ${durationMedian.toFixed(DECIMAL_PLACES)}\navg time: ${data.durationAvg.toFixed(DECIMAL_PLACES)}\nmin time: ${data.durationMin.toFixed(DECIMAL_PLACES)}\nmax time: ${data.durationMax.toFixed(DECIMAL_PLACES)}`}>
+                                            <span className={'text-success text-monospace'}>{durationMedian.toFixed(DECIMAL_PLACES)}</span>
                                           </td>
                                         );
                                       } else {
