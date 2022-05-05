@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RPCControllerContext } from './hooks/rpc-controller-context';
 import swal from 'sweetalert';
 import { GetNodeRes } from './modules/rpc-controller';
 import { Node } from '@pokt-network/pocket-js';
 import uniq from 'lodash/uniq';
-import { regionToName, regionToShortened, relayIdToName } from './util';
+import { getBackupNames, regionToName, regionToShortened, relayIdToName } from './util';
 import { AWS_REGIONS, DECIMAL_PLACES, INSTRUCTIONS_URL, SAMPLE_NUM } from './constants';
 import { ChainResponse } from './types/chain-response';
-// import daLogo from './images/da_logo_white-400.png';
 
 function App() {
 
@@ -16,6 +15,13 @@ function App() {
   const [ disableRunButton, setDisableRunButton ] = useState(false);
   const [ nodes, setNodes ] = useState<Node[]>([]);
   const [ chainData, setChainData ] = useState<ChainResponse[]>([]);
+  const [ backupNames, setBackupNames ] = useState<{[key: string]: string}>({});
+
+  useEffect(() => {
+    getBackupNames()
+      .then(obj => setBackupNames(obj))
+      .catch(console.error);
+  }, []);
 
   const styles = {
     form: {
@@ -171,7 +177,7 @@ function App() {
                               return (
                                 <tr key={node.address + id}>
                                   <td>{id}</td>
-                                  <td>{relayIdToName(id)}</td>
+                                  <td>{relayIdToName(id, backupNames)}</td>
                                   {AWS_REGIONS
                                     .map(region => {
                                       const key = node.address + id + region;

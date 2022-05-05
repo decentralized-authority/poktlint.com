@@ -1,4 +1,8 @@
-export const relayIdToName = (relayId: string): string => {
+import request from 'superagent';
+import isPlainObject from 'lodash/isPlainObject';
+import isString from 'lodash/isString';
+
+export const relayIdToName = (relayId: string, backupNames: {[key: string]: string} = {}): string => {
   switch(relayId) {
     case '0029':
       return 'algorand-mainnet';
@@ -46,8 +50,22 @@ export const relayIdToName = (relayId: string): string => {
       return 'poly-archival';
     case '0006':
       return 'sol-mainnet';
-    default:
-      return 'unknown';
+    default: {
+      const backupName = backupNames[relayId];
+      if(backupName && isString(backupName)) {
+        const matches = backupName.match(/(.+)\(|$/)
+        if(matches) {
+          return matches[1]
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-');
+        } else {
+          return 'unknown';
+        }
+      } else {
+        return 'unknown';
+      }
+    }
   }
 };
 
@@ -113,5 +131,16 @@ export const regionToName = (region: string): string => {
       return 'Europe West 1';
     default:
       return region;
+  }
+}
+
+export async function getBackupNames(): Promise<{[key: string]: string}> {
+  try {
+    const { body } = await request
+      .get('https://poktscan-v1.nyc3.digitaloceanspaces.com/pokt-chains.json');
+    return isPlainObject(body) ? body : {};
+  } catch(err) {
+    console.error(err);
+    return {};
   }
 }
