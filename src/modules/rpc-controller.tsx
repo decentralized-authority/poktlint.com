@@ -44,48 +44,62 @@ export class RPCController {
   }
 
   async getRelayData(nodeUrl: string, nodeAddress: string, region: string, chains: string[]): Promise<ChainResponse[]> {
-    const res = await request
-      .post(`${AWS_RELAYTEST_ENDPOINT}/${region}`)
-      .set('x-api-key', AWS_GATEWAY_API_KEY)
-      .timeout(60000)
-      .send({
-        node_url: nodeUrl,
-        chain_ids: chains,
-        num_samples: SAMPLE_NUM,
-      });
-    const { body = {}, statusCode } = res;
-    if(statusCode !== 200)
-      return [];
-    const chainResponses: ChainResponse[] = [];
-    if(body.errorMessage) {
-      for(let i = 0; i < chains.length; i++) {
-        const chain = chains[i];
-        chainResponses.push(new ChainResponse({
-          poktAddress: nodeAddress,
-          region: region,
-          chain_id: chain,
-          chain_name: '',
-          success: false,
-          status_code: statusCode,
-          message: body.errorMessage,
-          duration_avg_ms: 0,
-          duration_median_ms: 0,
-          duration_min_ms: 0,
-          duration_max_ms: 0,
-        }));
+    const responses = await Promise.all(chains.map(async (chain): Promise<ChainResponse[]> => {
+      let body: any;
+      let statusCode: number;
+      try {
+        const res = await request
+          .post(`${AWS_RELAYTEST_ENDPOINT}/${region}`)
+          .set('x-api-key', AWS_GATEWAY_API_KEY)
+          .timeout(60000)
+          .send({
+            node_url: nodeUrl,
+            chain_ids: [chain],
+            num_samples: SAMPLE_NUM,
+          });
+        statusCode = res.statusCode;
+        if(statusCode !== 200)
+          return [];
+        body = res.body;
+      } catch(err: any) {
+        console.error(err);
+        statusCode = 0;
+        body = {
+          errorMessage: err.message,
+        };
       }
-    } else {
-      const rawDataArr: (ChainResponseData|string)[] = Object.values(body);
-      for(let i = 0; i < rawDataArr.length; i++) {
-        const item = rawDataArr[i];
-        if(typeof item === 'string')
-          throw new Error(item);
-        item.poktAddress = nodeAddress;
-        item.region = region;
-        chainResponses.push(new ChainResponse(item));
+      const chainResponses: ChainResponse[] = [];
+      if(body.errorMessage) {
+        for(let i = 0; i < chains.length; i++) {
+          const chain = chains[i];
+          chainResponses.push(new ChainResponse({
+            poktAddress: nodeAddress,
+            region: region,
+            chain_id: chain,
+            chain_name: '',
+            success: false,
+            status_code: statusCode,
+            message: body.errorMessage,
+            duration_avg_ms: 0,
+            duration_median_ms: 0,
+            duration_min_ms: 0,
+            duration_max_ms: 0,
+          }));
+        }
+      } else {
+        const rawDataArr: (ChainResponseData|string)[] = Object.values(body);
+        for(let i = 0; i < rawDataArr.length; i++) {
+          const item = rawDataArr[i];
+          if(typeof item === 'string')
+            throw new Error(item);
+          item.poktAddress = nodeAddress;
+          item.region = region;
+          chainResponses.push(new ChainResponse(item));
+        }
       }
-    }
-    return chainResponses;
+      return chainResponses;
+    }));
+    return responses.reduce((arr, a) => arr.concat(a), []);
   }
 
 }
