@@ -32,10 +32,13 @@ export class RPCController {
     if(!this._pocket)
       throw new Error('this._pocket is not defined.');
     try {
-      const res = await this._pocket.rpc()?.query.getNode(address);
-      if(!res || isError(res))
-        throw res;
-      return {node:res.node};
+      const res = await request
+        .post(`${POCKET_ENDPOINT}/v1/query/node`)
+        .type('application/json')
+        .send({address});
+      return {
+        node: Node.fromJSON(res.text),
+      };
     } catch(err) {
       if(isError(err))
         console.error(err);
